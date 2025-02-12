@@ -1,10 +1,18 @@
 import os
 import sys
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from eralchemy import render_er
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table
+from eralchemy2 import render_er
 
 Base = declarative_base()
+
+follower = Table(
+    "follower",
+    Base.metadata,
+    Column('user_from_id', ForeignKey('user.id')),
+    Column('user_to_id', ForeignKey('user.id')),
+)
+
 
 class User(Base):
     __tablename__ = 'user'
@@ -26,7 +34,7 @@ class Post(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False)
 
     users = relationship('User', back_populates='posts')
-    commets =relationship('Comment', back_populates='Post')
+    comments = relationship('Comment', back_populates='post')
     media =relationship('Media', back_populates='Post')
 
 class Comment(Base):
@@ -40,6 +48,7 @@ class Comment(Base):
     post = relationship('Post', back_populates='comments')
 
 
+
 class Media(Base):
     __tablename__= 'media'
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -48,16 +57,6 @@ class Media(Base):
     post_id: Mapped[int] = mapped_column(ForeignKey('post.id'), nullable=False)
 
     post = relationship('Post', back_populates='media')
-    
-
-class Follower(Base):
-    __tablename__ = 'follower'
-    user_from_id: Mapped[int] = mapped_column(nullable=False, primary_key=True)
-    user_to_id: Mapped[int] = mapped_column(nullable=False, primary_key=True)
-
-    user_from = relationship('User', back_populates='followers', foreign_keys=[user_from_id])
-    user_to = relationship('User', back_populates='following', foreign_keys=[user_to_id])
-
 
     def to_dict(self):
         return {}
