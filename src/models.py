@@ -27,11 +27,12 @@ class Comment(Base):
     post_id: Mapped[int] = mapped_column(nullable=False)
 
 class Media(Base):
-    __tablename__ = 'media'
+    __tablename__= 'media'
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(nullable=False)
     url: Mapped[str] = mapped_column(nullable=False)
     post_id: Mapped[int] = mapped_column(nullable=False)
+    
 
 class Follower(Base):
     __tablename__ = 'follower'
